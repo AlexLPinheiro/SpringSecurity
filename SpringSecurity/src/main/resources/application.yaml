@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: springSecurity
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tutorialsecurity
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
