@@ -26,15 +26,15 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizedHeader = request.getHeader("Authorization");
-        if (Strings.isNotEmpty(authorizedHeader) && authorizedHeader.startsWith("Bearer ")) {
-            String token = authorizedHeader.substring("Bearer".length());
-            Optional<JWTUserData> optUser = tokenConfig.validateToken(token);
-            if (optUser.isPresent()){
-                JWTUserData userData = optUser.get();
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userData, null, Collections.emptyList());
+        String authorizedHeader = request.getHeader("Authorization");//Coleta o header de autorização do request
+        if (Strings.isNotEmpty(authorizedHeader) && authorizedHeader.startsWith("Bearer ")) { //verifica se o header está vazio ou se começa com Bearer
+            String token = authorizedHeader.substring(7); //Cria um substring para puxar apenas o jwt
+            Optional<JWTUserData> optUser = tokenConfig.validateToken(token);//Cria um objeto optional para não retornar nullException, pois o token config pode ou não retornar um optUser
+            if (optUser.isPresent()){//Verifica se o optUser é nulo ou não
+                JWTUserData userData = optUser.get();// Como já está verificado, instancia o objeto
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userData, null, Collections.emptyList()); //Verifica se o userData é valido
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);//Cria um contexto para todos os endpoints autenticados
             }
             filterChain.doFilter(request, response);
         }
